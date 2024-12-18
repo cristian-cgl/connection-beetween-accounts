@@ -1,3 +1,5 @@
+const { STSClient, AssumeRoleCommand } = require("@aws-sdk/client-sts");
+
 async function getAssumeRoleCredentials(roleArn, roleSessionName) {
     const client = new STSClient({
         region: "us-east-1"

@@ -14,7 +14,7 @@ resource "aws_dynamodb_table" "app_settings" {
 }
 
 resource "aws_dynamodb_table_item" "my_item" {
-  table_name = aws_dynamodb_table.config_table.name
+  table_name = aws_dynamodb_table.app_settings.name
   hash_key   = "id"
   item = jsonencode({
     "id" : { "S" : "app-version" },
@@ -23,8 +23,7 @@ resource "aws_dynamodb_table_item" "my_item" {
 }
 
 # Rol para poder tener vinculación
-
-# TrustPolicy
+# 1. Creación de rol con politica de confianza
 resource "aws_iam_role" "account_a_lambda_get_app_version" {
   name = "role-account-a-lambda-get-app-version"
   assume_role_policy = jsonencode({
@@ -33,7 +32,7 @@ resource "aws_iam_role" "account_a_lambda_get_app_version" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::${var.account_a_id}:role/example-lambda-role"
+          "AWS" : "arn:aws:iam::${var.account_a_id}:role/role-lambda-get-app-version"
         },
         "Action" : "sts:AssumeRole"
       }
@@ -41,7 +40,7 @@ resource "aws_iam_role" "account_a_lambda_get_app_version" {
   })
 }
 
-# Políticas de permisos para el rol IAM
+# # Políticas de permisos para el rol IAM
 resource "aws_iam_role_policy" "account_a_lambda_get_app_version_policy" {
   name = "role-account-a-lambda-get-app-version-policy"
   role = aws_iam_role.account_a_lambda_get_app_version.id

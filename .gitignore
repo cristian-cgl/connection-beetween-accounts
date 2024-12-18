@@ -1,4 +1,4 @@
-/node_modules
+node_modules
 /dist
 /.tmp
 /.sass-cache
@@ -8,8 +8,6 @@ reports/
 coverage/
 .nyc_output
 package-lock.json
-
-**/node_modules/**
 
 # Local .terraform directories
 **/.terraform/*
@@ -40,4 +38,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-.zip
+*.zip

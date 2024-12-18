@@ -29,25 +29,31 @@ resource "aws_iam_role_policy" "role_lambda_get_app_version_policy" {
         Action   = "logs:*"
         Effect   = "Allow"
         Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect : "Allow",
+        Action : [
+          "sts:AssumeRole"
+        ],
+        Resource : "arn:aws:iam::${var.account_b_id}:role/role-account-a-lambda-get-app-version"
       }
-      # {
-      #   Effect : "Allow",
-      #   Action : [
-      #     "sts:AssumeRole"
-      #   ],
-      #   Resource : "arn:aws:iam::${var.account_b_id}:role/role-account-a-lambda-get-app-version"
-      # }
     ]
   })
 }
 
 # Crear la función Lambda
-resource "aws_lambda_function" "example_lambda" {
+resource "aws_lambda_function" "get_app_version" {
   filename         = "lambda.zip"
   source_code_hash = filebase64sha256("./lambda.zip")
   function_name    = "get-app-version"
   role             = aws_iam_role.role_lambda_get_app_version.arn
-  handler          = "index.handler"
+  handler          = "handler.handler"
   runtime          = "nodejs18.x"
-  environment {}
+  environment {
+    variables = {
+      LAMBDA_TABLE_APP_SETTINGS = "arn:aws:dynamodb:us-east-1:${var.account_b_id}:table/table-app-settings",
+      LAMBDA_ROLE_ARN = "arn:aws:iam::${var.account_b_id}:role/role-account-a-lambda-get-app-version",
+      LAMBDA_ROLE_SESSION_NAME = "role-lambda-get-app-version-session"
+    }
+  }
 }
