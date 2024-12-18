@@ -45,5 +45,5 @@ Puedes usar aws-cli para colocar las credenciales o utilizar algún método de a
 Desde la carpeta raiz del ejemplo:
 ```sh
 example > cd ./account-b
-example/account-a > tf apply --auto-approve --var-file="../env.tfvars"
+example/account-b > tf apply --auto-approve --var-file="../env.tfvars"
 ```
